@@ -6,11 +6,27 @@ import Card from "./Card.js";
 import Board from "./Board.js";
 import { SHAPES, NUMBERS, COLORS, SHADES } from "./Cards.js";
 
-// const SUITS = ["Spades", "Hearts", "Clubs", "Diamonds"];
-// const NUMBERS = ["Ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"];
-// const SUIT_ABBREVIATIONS = ["🖤", "💗", "🍀", "🔷"];
-// const SUIT_ABBREVIATIONS = ["S", "H", "C", "D"];
-// ❤🔷🖤♣♠♥🍀
+/*
+TODO:
+- handle unique key warning
+- make variables React-ive (set state)
+- allow single user to select a set (no more than 3 cards)
+  - on set:
+    - give to user
+    - (later) verify it's a set
+    - (later) make it displayable in user's "hand"
+    - re-deal
+- later
+  - handle more than 12 card board case
+  - save to backend
+  - Page layout
+    - title
+    - board spacing
+    - show deck
+    - show user
+    - show user's hand
+  - multi-users
+*/
 
 function displayAllCards(cards) {
   return (
@@ -21,6 +37,7 @@ function displayAllCards(cards) {
     </ul>
   );
 }
+
 function getDeck() {
   let cards = [];
   for (let shapeIndex = 0; shapeIndex < SHAPES.length; shapeIndex++) {
