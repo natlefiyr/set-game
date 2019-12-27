@@ -3,7 +3,7 @@ import Card from "./Card.js";
 
 /* let board = (); */
 
-function Board({ cards }) {
+function Board({ cards, handleCardClickInApp }) {
   // TODO: handle case when there are more than 12 cards
   const [numSelected, setNumSelected] = useState(0);
   let rows = [];
@@ -15,19 +15,7 @@ function Board({ cards }) {
       rows[row].push(cards[row * 4 + col] || {});
     }
   }
-  /** Returns whether the card can be selected */
-  function handleCardClickOnBoard(select) {
-    if (select) {
-      if (numSelected < 3) {
-        setNumSelected(numSelected + 1);
-        return true;
-      }
-      return false;
-    } else {
-      setNumSelected(numSelected - 1);
-      return true;
-    }
-  }
+
   return (
     <div>
       {rows.map((row, rowIndex) => (
@@ -36,7 +24,8 @@ function Board({ cards }) {
             <Card
               card={cardValue}
               key={rowIndex * 4 + colIndex}
-              handleCardClickOnBoard={handleCardClickOnBoard}
+              boardIndex={rowIndex * 4 + colIndex}
+              handleCardClickOnBoard={handleCardClickInApp}
             ></Card>
           ))}
         </div>

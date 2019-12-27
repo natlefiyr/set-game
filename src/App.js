@@ -98,24 +98,40 @@ function App() {
 
   const dealResults = deal([], initialDeckCards, 9);
   const [deckCards, setDeckCards] = useState(dealResults.newDeckCards);
-  // setDeckCards(initialDeckCards);
   const [boardCards, setBoardCards] = useState(dealResults.newBoardCards);
-  // useEffect(() => {
-  //   // Using _users to avoid naming confusion with users above
-  //   // getUsers({ type: "users" }).then(_users => setUsers(_users));
-  //   setDeckCards();
-  //   setBoardCards();
-  // }, []);
+  const [selectedCards, setSelectedCards] = useState([]);
+  const [userSets, setUserSets] = useState([]);
+
   function handleDeal(event) {
     const dealResults = deal(boardCards, deckCards, 12);
     setDeckCards(dealResults.newDeckCards);
     setBoardCards(dealResults.newBoardCards);
   }
+  /** Returns whether the card can be selected */
+  function handleCardClickInApp(select, boardIndex) {
+    const numSelected = selectedCards.length;
+    if (select) {
+      if (numSelected < 3) {
+        setSelectedCards([...selectedCards, boardIndex]);
+        return true;
+      }
+      return false;
+    } else {
+      const newSelected = selectedCards.filter(
+        selectedCard => selectedCard !== boardIndex
+      );
+      setSelectedCards(newSelected);
+      return true;
+    }
+  }
 
   return (
     <div className="App">
       <button onClick={handleDeal}>Deal</button>
-      <Board cards={boardCards}></Board>
+      <Board
+        cards={boardCards}
+        handleCardClickInApp={handleCardClickInApp}
+      ></Board>
     </div>
   );
 }

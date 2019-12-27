@@ -13,7 +13,7 @@ function getNumberedShape(number, shape, color, isEmptyPlaceholder) {
   return numberedShape;
 }
 
-function Card({ card, handleCardClickOnBoard }) {
+function Card({ card, handleCardClickOnBoard, boardIndex }) {
   const [selected, setSelected] = useState(false);
   const isEmptyPlaceholder = card.number === undefined;
   const cardStyle = {
@@ -39,7 +39,7 @@ function Card({ card, handleCardClickOnBoard }) {
   function handleCardClick() {
     // User cannot select placeholder space
     if (!isEmptyPlaceholder) {
-      const canSelect = handleCardClickOnBoard(!selected);
+      const canSelect = handleCardClickOnBoard(!selected, boardIndex);
       if (canSelect) {
         setSelected(!selected);
       }
