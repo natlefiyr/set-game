@@ -64,13 +64,12 @@ function getDeck() {
 function shuffle(cards) {
   var cardsCopy = cloneDeep(cards);
   var shuffledCards = [];
-  console.log(cards);
+
   for (let i = 0; i < cards.length; i++) {
     let index = Math.floor(Math.random() * cardsCopy.length);
     shuffledCards.push(cardsCopy[index]);
     cardsCopy.splice(index, 1);
   }
-  console.log(shuffledCards);
   return shuffledCards;
 }
 function deal(boardCards, deckCards, limit) {
@@ -78,7 +77,7 @@ function deal(boardCards, deckCards, limit) {
   // TODO: replace pop b/c that changes state by side effect
   // TODO: handle case when there are more than 12 cards
   const numCardsToDeal = limit - boardCards.length;
-  console.log("deckcards:", deckCards);
+
   const newBoardCards = boardCards.concat(
     deckCards.filter((value, index) => index < numCardsToDeal)
   );
