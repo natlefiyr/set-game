@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import cloneDeep from "lodash/cloneDeep";
@@ -8,8 +8,8 @@ import { SHAPES, NUMBERS, COLORS, SHADES } from "./Cards.js";
 
 /*
 TODO:
-- handle unique key warning
-- make variables React-ive (set state)
+- [DONE] handle unique key warning
+- [DONE] make variables React-ive (set state)
 - allow single user to select a set (no more than 3 cards)
   - on set:
     - give to user
@@ -45,6 +45,11 @@ function getDeck() {
       for (let shadeIndex = 0; shadeIndex < SHADES.length; shadeIndex++) {
         for (let numberIndex = 0; numberIndex < NUMBERS.length; numberIndex++) {
           cards.push({
+            key:
+              shapeIndex * 3 ** 3 +
+              colorIndex * 3 ** 2 +
+              shadeIndex * 3 ** 1 +
+              numberIndex * 3 ** 0,
             shape: shapeIndex,
             color: colorIndex,
             shade: shadeIndex,
@@ -57,8 +62,8 @@ function getDeck() {
   return cards;
 }
 function shuffle(cards) {
-  const cardsCopy = cloneDeep(cards);
-  const shuffledCards = [];
+  var cardsCopy = cloneDeep(cards);
+  var shuffledCards = [];
   console.log(cards);
   for (let i = 0; i < cards.length; i++) {
     let index = Math.floor(Math.random() * cardsCopy.length);
@@ -68,24 +73,49 @@ function shuffle(cards) {
   console.log(shuffledCards);
   return shuffledCards;
 }
-function deal(boardCards, deckCards) {
+function deal(boardCards, deckCards, limit) {
   // For now just initial deal
   // TODO: replace pop b/c that changes state by side effect
   // TODO: handle case when there are more than 12 cards
-  for (let i = 0; i < 12; i++) {
-    boardCards.push(deckCards.pop());
-  }
+  const numCardsToDeal = limit - boardCards.length;
+  console.log("deckcards:", deckCards);
+  const newBoardCards = boardCards.concat(
+    deckCards.filter((value, index) => index < numCardsToDeal)
+  );
+  const newDeckCards = deckCards.filter(
+    (value, index) => index >= numCardsToDeal
+  );
+  return {
+    newBoardCards: newBoardCards,
+    newDeckCards: newDeckCards
+  };
 }
 function sort(cards) {}
 
 function App() {
   const sortedDeck = getDeck();
   // TODO: refactor so these are constants!!
-  var deckCards = shuffle(sortedDeck);
-  var boardCards = [];
-  deal(boardCards, deckCards);
+  const initialDeckCards = shuffle(sortedDeck);
+
+  const dealResults = deal([], initialDeckCards, 9);
+  const [deckCards, setDeckCards] = useState(dealResults.newDeckCards);
+  // setDeckCards(initialDeckCards);
+  const [boardCards, setBoardCards] = useState(dealResults.newBoardCards);
+  // useEffect(() => {
+  //   // Using _users to avoid naming confusion with users above
+  //   // getUsers({ type: "users" }).then(_users => setUsers(_users));
+  //   setDeckCards();
+  //   setBoardCards();
+  // }, []);
+  function handleDeal(event) {
+    const dealResults = deal(boardCards, deckCards, 12);
+    setDeckCards(dealResults.newDeckCards);
+    setBoardCards(dealResults.newBoardCards);
+  }
+
   return (
     <div className="App">
+      <button onClick={handleDeal}>Deal</button>
       <Board cards={boardCards}></Board>
     </div>
   );

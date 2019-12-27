@@ -3,6 +3,10 @@ import { SHAPES, NUMBERS, COLORS, SHADES } from "./Cards.js";
 
 function getNumberedShape(number, shape, color) {
   var numberedShape = "";
+  if (number === undefined) {
+    // TODO: fix this - hackily put some content so height is automatically calculated correctly
+    return "*";
+  }
   for (let numberIndex = 0; numberIndex < number + 1; numberIndex++) {
     numberedShape += COLORS[color].iconLookup[shape];
   }
@@ -10,7 +14,6 @@ function getNumberedShape(number, shape, color) {
 }
 
 function Card({ card }) {
-  const shadeName = SHADES[card.shade].name;
   const cardStyle = {
     display: "inline-block",
     textAlign: "center",
@@ -19,7 +22,13 @@ function Card({ card }) {
     margin: "5px",
     padding: "5px"
   };
-  cardStyle["backgroundColor"] = SHADES[card.shade].backgroundColor;
+  let shadeName;
+  if (card.number === undefined) {
+    cardStyle["color"] = "white";
+  } else {
+    shadeName = SHADES[card.shade].name;
+    cardStyle["backgroundColor"] = SHADES[card.shade].backgroundColor;
+  }
 
   return (
     <div style={cardStyle}>
