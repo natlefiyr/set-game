@@ -5,7 +5,7 @@ import cloneDeep from "lodash/cloneDeep";
 import Card from "./Card.js";
 import Board from "./Board.js";
 import UserHand from "./UserHand.js";
-import { SHAPES, NUMBERS, COLORS, SHADES } from "./Cards.js";
+import { SHAPES, NUMBERS, COLORS, SHADES, NUM_VARIATIONS } from "./Cards.js";
 
 /*
 TODO:
@@ -23,10 +23,18 @@ TODO:
   - Page layout
     - [DONE] title
     - [DONE] board spacing
+    - finalize card sizing/spacing
     - show deck
-    - show user
+    - show user (name, score = num sets - num incorrect sets)
     - [DONE] show user's hand
   - multi-users
+  - automated testing
+  - test that end game works
+  - set with more attributes?
+  - diversity scores (how many attributes are different?)
+  - check if any sets are left
+  - check if any sets exist (computer plays, with wait time)
+  - user timer
 */
 
 function displayAllCards(cards) {
@@ -102,6 +110,31 @@ function deal(boardCards, deckCards, limit) {
 }
 function sort(cards) {}
 
+function verifySet(set) {
+  const attributes = ["number", "shape", "color", "shade"];
+  const foundSetViolation = attributes.find(function(attribute) {
+    const attributes = set.map(card => card[attribute]);
+    const attributeSet = new Set(attributes);
+    const numSameAttributes = attributeSet.size;
+    console.log({
+      attribute: attribute,
+      variations: attributes,
+      attSet: attributeSet,
+      numSameAttributes: numSameAttributes
+    });
+    // If the cards have all the same or all different versions
+    // of the attribute, this attribute is kosher for a set
+    if (numSameAttributes === 1 || numSameAttributes === NUM_VARIATIONS) {
+      console.log("kosher");
+      return false;
+    }
+    console.log("NOT kosher");
+    return true;
+  });
+  console.log({ setviol: foundSetViolation });
+  return foundSetViolation === undefined;
+}
+
 function App() {
   const sortedDeck = getDeck();
   // TODO: refactor so these are constants!!
@@ -132,6 +165,7 @@ function App() {
         let newBoardCards = boardCards.map((card, index) =>
           index === boardIndex ? { ...card, selected: true } : card
         );
+        //TODO: how to force this to render?
         setBoardCards(newBoardCards);
 
         // When user selects the third card, add the set to the user's hand
@@ -144,14 +178,22 @@ function App() {
                 ? { ...card, isUserSet: true, selected: false }
                 : { ...card, isUserSet: true }
             );
-
-          // Replace the Set cards on the board with empty cards
-          newBoardCards = newBoardCards.map((card, index) =>
-            card.selected ? { isEmptyPlaceholder: 1 } : card
-          );
-          setBoardCards(newBoardCards);
-          setUserSets([...userSets, set]);
-          finalizeDeal(newBoardCards, deckCards, 12);
+          const isSet = verifySet(set);
+          if (isSet) {
+            // Replace the Set cards on the board with empty cards
+            newBoardCards = newBoardCards.map((card, index) =>
+              card.selected ? { isEmptyPlaceholder: 1 } : card
+            );
+            setBoardCards(newBoardCards);
+            setUserSets([...userSets, set]);
+            finalizeDeal(newBoardCards, deckCards, 12);
+          } else {
+            alert("That's not a set!");
+            // Unselect all cards
+            setBoardCards(
+              boardCards.map(card => ({ ...card, selected: false }))
+            );
+          }
         }
       }
     } else {

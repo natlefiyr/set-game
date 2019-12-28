@@ -14,3 +14,5 @@ export const SHADES = [
   { icon: "🔗", name: "Shaded", backgroundColor: "gray" },
   { icon: "⚫", name: "Opaque", backgroundColor: "black" }
 ];
+// all attributes have 3 variations
+export const NUM_VARIATIONS = 3;

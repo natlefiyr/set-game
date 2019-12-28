@@ -21,21 +21,27 @@ function Card({ card, handleCardClickOnBoard, boardIndex }) {
     display: "inline-block",
     textAlign: "center",
     border: "2px solid black",
-    margin: "7px 5px",
+
     backgroundColor: "white"
   };
   let shadeName;
   // TODO: maybe find a way not to hard-code width etc?
 
   if (card.isUserSet) {
-    cardStyle = { ...cardStyle, padding: "5px", width: "80px" };
+    cardStyle = {
+      ...cardStyle,
+      padding: "5px",
+      width: "80px",
+      margin: "7px 5px"
+    };
   } else {
     // cardStyle["fontSize"] = "20px";
     cardStyle = {
       ...cardStyle,
       fontSize: "20px",
-      padding: "7px",
-      width: "110px"
+      padding: "18px 18px",
+      width: "130px",
+      margin: "9px 7px"
     };
   }
   if (isEmptyPlaceholder) {
@@ -46,7 +52,8 @@ function Card({ card, handleCardClickOnBoard, boardIndex }) {
   }
   if (card.selected) {
     cardStyle["border"] = "4px solid red";
-    cardStyle["margin"] = "5px 5px";
+    // 2px more on top & bottom from increased border => 2px less on top & bottom margin
+    cardStyle["margin"] = "7px 7px";
   }
   function handleCardClick() {
     // User cannot select placeholder space
