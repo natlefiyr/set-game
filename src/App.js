@@ -4,27 +4,28 @@ import "./App.css";
 import cloneDeep from "lodash/cloneDeep";
 import Card from "./Card.js";
 import Board from "./Board.js";
+import UserHand from "./UserHand.js";
 import { SHAPES, NUMBERS, COLORS, SHADES } from "./Cards.js";
 
 /*
 TODO:
 - [DONE] handle unique key warning
 - [DONE] make variables React-ive (set state)
-- allow single user to select a set (no more than 3 cards)
+- [DONE] allow single user to select a set (no more than 3 cards)
   - on set:
-    - give to user
+    - [DONE] give to user
     - (later) verify it's a set
-    - (later) make it displayable in user's "hand"
-    - re-deal
+    - [DONE] (later) make it displayable in user's "hand"
+    - [DONE] re-deal
 - later
   - handle more than 12 card board case
   - save to backend
   - Page layout
-    - title
-    - board spacing
+    - [DONE] title
+    - [DONE] board spacing
     - show deck
     - show user
-    - show user's hand
+    - [DONE] show user's hand
   - multi-users
 */
 
@@ -138,7 +139,11 @@ function App() {
           // Get the Set cards, and get a version where they are unselected
           const set = newBoardCards
             .filter(card => card.selected === true)
-            .map(card => (card.selected ? { ...card, selected: false } : card));
+            .map(card =>
+              card.selected
+                ? { ...card, isUserSet: true, selected: false }
+                : { ...card, isUserSet: true }
+            );
 
           // Replace the Set cards on the board with empty cards
           newBoardCards = newBoardCards.map((card, index) =>
@@ -163,11 +168,13 @@ function App() {
 
   return (
     <div className="App">
-      <button onClick={handleDeal}>Deal</button>
+      <h2>Set Game</h2>
       <Board
         cards={boardCards}
         handleCardClickInApp={handleCardClickInApp}
       ></Board>
+      <button onClick={handleDeal}>Deal</button>
+      <UserHand userSets={userSets}></UserHand>
     </div>
   );
 }

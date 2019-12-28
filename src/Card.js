@@ -17,16 +17,27 @@ function Card({ card, handleCardClickOnBoard, boardIndex }) {
   // TODO: should assert that we never get to the 2nd part of this OR
   const isEmptyPlaceholder =
     card.isEmptyPlaceholder || card.number === undefined;
-  const cardStyle = {
+  let cardStyle = {
     display: "inline-block",
     textAlign: "center",
-    width: "80px",
     border: "2px solid black",
     margin: "7px 5px",
-    padding: "5px",
     backgroundColor: "white"
   };
   let shadeName;
+  // TODO: maybe find a way not to hard-code width etc?
+
+  if (card.isUserSet) {
+    cardStyle = { ...cardStyle, padding: "5px", width: "80px" };
+  } else {
+    // cardStyle["fontSize"] = "20px";
+    cardStyle = {
+      ...cardStyle,
+      fontSize: "20px",
+      padding: "7px",
+      width: "110px"
+    };
+  }
   if (isEmptyPlaceholder) {
     cardStyle["color"] = "white";
   } else {
