@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import Card from "./Card.js";
 
-/* let board = (); */
-
 function Board({ cards, handleCardClickInApp }) {
   // TODO: handle case when there are more than 12 cards
   const [numSelected, setNumSelected] = useState(0);
@@ -12,7 +10,7 @@ function Board({ cards, handleCardClickInApp }) {
       rows[row] = [];
     }
     for (let col = 0; col < 4; col++) {
-      rows[row].push(cards[row * 4 + col] || {});
+      rows[row].push(cards[row * 4 + col] || { isEmptyPlaceholder: 1 });
     }
   }
 

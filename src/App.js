@@ -76,11 +76,21 @@ function deal(boardCards, deckCards, limit) {
   // For now just initial deal
   // TODO: replace pop b/c that changes state by side effect
   // TODO: handle case when there are more than 12 cards
-  const numCardsToDeal = limit - boardCards.length;
-
-  const newBoardCards = boardCards.concat(
-    deckCards.filter((value, index) => index < numCardsToDeal)
+  const numFilledCardSlots = boardCards.filter(card => !card.isEmptyPlaceholder)
+    .length;
+  const numCardsToDeal = limit - numFilledCardSlots;
+  const cardsToDeal = deckCards.filter(
+    (value, index) => index < numCardsToDeal
   );
+
+  // Fill any empty spots
+  let newBoardCards = boardCards.map(card =>
+    card.isEmptyPlaceholder
+      ? cardsToDeal.pop() || { isEmptyPlaceholder: 1 }
+      : card
+  );
+  // Add any additional cards still left to deal
+  newBoardCards = newBoardCards.concat(cardsToDeal);
   const newDeckCards = deckCards.filter(
     (value, index) => index >= numCardsToDeal
   );
@@ -96,31 +106,57 @@ function App() {
   // TODO: refactor so these are constants!!
   const initialDeckCards = shuffle(sortedDeck);
 
-  const dealResults = deal([], initialDeckCards, 9);
+  const dealResults = deal([], initialDeckCards, 12);
   const [deckCards, setDeckCards] = useState(dealResults.newDeckCards);
   const [boardCards, setBoardCards] = useState(dealResults.newBoardCards);
-  const [selectedCards, setSelectedCards] = useState([]);
   const [userSets, setUserSets] = useState([]);
 
-  function handleDeal(event) {
-    const dealResults = deal(boardCards, deckCards, 12);
+  function finalizeDeal(boardCards, deckCards, limit) {
+    const dealResults = deal(boardCards, deckCards, limit);
     setDeckCards(dealResults.newDeckCards);
     setBoardCards(dealResults.newBoardCards);
   }
+  function handleDeal(event) {
+    finalizeDeal(boardCards, deckCards, 12);
+  }
   /** Returns whether the card can be selected */
-  function handleCardClickInApp(select, boardIndex) {
-    const numSelected = selectedCards.length;
+  function handleCardClickInApp(boardIndex) {
+    const card = boardCards[boardIndex];
+    // Determine whether the user wants to select the card (or unselect it)
+    const select = !card.selected;
+    const numSelected = boardCards.filter(card => card.selected).length;
     if (select) {
       if (numSelected < 3) {
-        setSelectedCards([...selectedCards, boardIndex]);
-        return true;
+        // Set the card as selected
+        let newBoardCards = boardCards.map((card, index) =>
+          index === boardIndex ? { ...card, selected: true } : card
+        );
+        setBoardCards(newBoardCards);
+
+        // When user selects the third card, add the set to the user's hand
+        if (numSelected === 2) {
+          // Get the Set cards, and get a version where they are unselected
+          const set = newBoardCards
+            .filter(card => card.selected === true)
+            .map(card => (card.selected ? { ...card, selected: false } : card));
+
+          // Replace the Set cards on the board with empty cards
+          newBoardCards = newBoardCards.map((card, index) =>
+            card.selected ? { isEmptyPlaceholder: 1 } : card
+          );
+          setBoardCards(newBoardCards);
+          setUserSets([...userSets, set]);
+          finalizeDeal(newBoardCards, deckCards, 12);
+        }
       }
-      return false;
     } else {
-      const newSelected = selectedCards.filter(
-        selectedCard => selectedCard !== boardIndex
+      // Set the card as unselected
+      setBoardCards(
+        boardCards.map((card, index) =>
+          index === boardIndex ? { ...card, selected: false } : card
+        )
       );
-      setSelectedCards(newSelected);
+
       return true;
     }
   }

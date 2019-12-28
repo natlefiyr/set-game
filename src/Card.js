@@ -14,8 +14,9 @@ function getNumberedShape(number, shape, color, isEmptyPlaceholder) {
 }
 
 function Card({ card, handleCardClickOnBoard, boardIndex }) {
-  const [selected, setSelected] = useState(false);
-  const isEmptyPlaceholder = card.number === undefined;
+  // TODO: should assert that we never get to the 2nd part of this OR
+  const isEmptyPlaceholder =
+    card.isEmptyPlaceholder || card.number === undefined;
   const cardStyle = {
     display: "inline-block",
     textAlign: "center",
@@ -32,17 +33,14 @@ function Card({ card, handleCardClickOnBoard, boardIndex }) {
     shadeName = SHADES[card.shade].name;
     cardStyle["backgroundColor"] = SHADES[card.shade].backgroundColor;
   }
-  if (selected) {
+  if (card.selected) {
     cardStyle["border"] = "4px solid red";
     cardStyle["margin"] = "5px 5px";
   }
   function handleCardClick() {
     // User cannot select placeholder space
     if (!isEmptyPlaceholder) {
-      const canSelect = handleCardClickOnBoard(!selected, boardIndex);
-      if (canSelect) {
-        setSelected(!selected);
-      }
+      handleCardClickOnBoard(boardIndex);
     }
   }
 
