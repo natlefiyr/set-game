@@ -14,7 +14,8 @@ TODO:
 - [DONE] allow single user to select a set (no more than 3 cards)
   - on set:
     - [DONE] give to user
-    - (later) verify it's a set
+    - [DONE] (later) verify it's a set
+       - TODO: is this done?
     - [DONE] (later) make it displayable in user's "hand"
     - [DONE] re-deal
 - later
@@ -27,14 +28,16 @@ TODO:
     - show deck
     - show user (name, score = num sets - num incorrect sets)
     - [DONE] show user's hand
+  - [DONE] test that end game works
+  - additional user info
+    - diversity scores (how many attributes are different?)
+    - user timer
+  - computer checking/playing
+    - check if any sets are left
+    - check if any sets exist (computer plays, with wait time)
   - multi-users
   - automated testing
-  - test that end game works
   - set with more attributes?
-  - diversity scores (how many attributes are different?)
-  - check if any sets are left
-  - check if any sets exist (computer plays, with wait time)
-  - user timer
 */
 
 function displayAllCards(cards) {

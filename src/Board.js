@@ -23,6 +23,8 @@ function Board({ cards, handleCardClickInApp }) {
               card={cardValue}
               key={rowIndex * 4 + colIndex}
               boardIndex={rowIndex * 4 + colIndex}
+              // TODO: probably keep this as it is above?
+              // boardIndex={undefined}
               handleCardClickOnBoard={handleCardClickInApp}
             ></Card>
           ))}
